@@ -1,0 +1,52 @@
+
+#include <curses.h> //itt találhatóak képernyőkezeléshez szükséges eszközök
+#include <unistd.h> // usleep() funkció használatához
+
+int main ( void )
+{
+
+    WINDOW *ablak;   	//WINDOW tipusú pointer ebben fogjuk lekérdezni az aktuális képernyő adatait 
+    ablak = initscr (); //initscr () funkcióval lekérdezük és hozárrendeljük a képernyő adatait ablak nevű WINDOW pointerünkhöz.
+
+    int x = 0;		//a kezdőm x és y értékek ahonnan a labda fog indulni.
+    int y = 0;
+
+    int xnov = 1;    //lépésközöket adjuk meg, ilyen értékel növeljök a labda pozicióját.
+    int ynov = 1;
+
+    int mx;  	//itt tároljuk hogy hány sorból és oszlopból áll az ablakunk.
+    int my;
+
+    for ( ;; ) {	//végtelen ciklus hogy folyamatosan fusson
+
+        getmaxyx ( ablak, my , mx ); //getmaxyx funkció segitségével lekérdezzük hogy hány sorból és oszlopból áll 						az ablak majd tároljuk my és my-ben.
+				     		
+
+        mvprintw ( y, x, "O" ); //mvprintw funkcióaktuális képernyőre ír ki, itt az "O" karaktert és
+				//megadhatjuk neki cursor pozicióját ahova írni szeretnénk 
+
+        refresh ();		//refresh () frissíti a képernyőt szükséges hogy megjelenítödjön a karakter
+				//ami ezidáig a bufferben tárolódik
+        usleep ( 50000 );	//felfüggeszti a program futását miliszekundumokban mérve
+
+	clear();		//törli a képernyőt ha nem teszük be akkor az öszes eddig kiírt labdát látnifogjuk
+        x = x + xnov;		//x és y érékét növeljük a megadott növekedési értékekkel
+        y = y + ynov;
+
+        if ( x>=mx-1 ) { // elerte-e a jobb oldalt?
+            xnov = xnov * -1;
+        }
+        if ( x<=0 ) { // elerte-e a bal oldalt?
+            xnov = xnov * -1;
+        }
+        if ( y<=0 ) { // elerte-e a tetejet?
+            ynov = ynov * -1;
+        }
+        if ( y>=my-1 ) { // elerte-e a aljat?
+            ynov = ynov * -1;
+        }
+
+    }
+
+    return 0;
+}
