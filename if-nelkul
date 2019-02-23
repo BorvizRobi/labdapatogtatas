@@ -1,0 +1,41 @@
+#include <curses.h> //itt találhatóak képernyőkezeléshez szükséges eszközök
+#include <unistd.h> // usleep() funkció használatához
+#include <stdlib.h> // abs() funkció használatához
+
+int main ( void )
+{
+
+    WINDOW *ablak;   	//WINDOW tipusú pointer ebben fogjuk lekérdezni az aktuális képernyő adatait 
+    ablak = initscr (); //initscr () funkcióval lekérdezük és hozárrendeljük a képernyő adatait ablak nevű WINDOW pointerünkhöz.
+
+    int mx;  	//itt tároljuk hogy hány sorból és oszlopból áll az ablakunk.
+    int my;
+
+    int xj = 0, xk = 0, yj = 0, yk = 0; //százalékos osztás eredményének tárolására.
+
+    for ( ;; ) {	//végtelen ciklus hogy folyamatosan fusson
+
+
+        getmaxyx ( ablak, my , mx ); //getmaxyx funkció segitségével lekérdezzük hogy hány sorból és oszlopból áll az 					     //ablak majd tároljuk my és mx-ben.   
+   
+	      xj = (xj - 1) % mx;	//elvégezzük a %-os osztásokat
+        xk = (xk + 1) % mx;
+
+        yj = (yj - 1) % my;
+        yk = (yk + 1) % my;						
+				     		
+	    
+        mvprintw ( abs (yj + (my - yk) ), abs (xj + (mx - xk)) , "O" ); //mvprintw funkció aktuális képernyőre ír ki, itt az "O" karaktert és megadhatjuk neki cursor pozicióját ahova írni szeretnénk most a két kordinátát a két maradékos osztás összemosásával adjuk meg	
+
+        refresh ();		//refresh () frissíti a képernyőt szükséges hogy megjelenítödjön a karakter ami ezidáig a bufferben tárolódik
+        usleep ( 50000);	//felfüggeszti a program futását miliszekundumokban mérve
+
+	clear();		//törli a képernyőt ha nem teszük be akkor az öszes eddig kiírt labdát látnifogjuk
+
+
+
+
+    }
+
+    return 0;
+}
